@@ -7,3 +7,7 @@ options.cfg
 
 # Object files
 *.pyc
+
+# SQLite databases
+*.db
+
