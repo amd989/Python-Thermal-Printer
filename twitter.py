@@ -80,29 +80,35 @@ def issueRequestAndDecodeResponse(method, url, body, headers):
 
 # Get access token. --------------------------------------------------------
 
-token = issueRequestAndDecodeResponse(
-  'POST', authUrl, 'grant_type=client_credentials',
-   {'Host'            : host,
-    'User-Agent'      : agent,
-    'Accept-Encoding' : 'gzip',
-    'Content-Type'    : 'application/x-www-form-urlencoded;charset=UTF-8',
-    'Authorization'   : 'Basic ' + base64.b64encode(
-     urllib.quote(consumer_key) + ':' + urllib.quote(consumer_secret))}
-  )['access_token']
-
+try:
+  token = issueRequestAndDecodeResponse(
+    'POST', authUrl, 'grant_type=client_credentials',
+     {'Host'            : host,
+      'User-Agent'      : agent,
+      'Accept-Encoding' : 'gzip',
+      'Content-Type'    : 'application/x-www-form-urlencoded;charset=UTF-8',
+      'Authorization'   : 'Basic ' + base64.b64encode(
+       urllib.quote(consumer_key) + ':' + urllib.quote(consumer_secret))}
+    )['access_token']
+except:
+  print(lastId)
+  exit(0)
 
 # Perform search. ----------------------------------------------------------
 
-data = issueRequestAndDecodeResponse(
-  'GET',
-  (searchUrl + 'count=3&since_id=%s&q=%s' %
-   (lastId, urllib.quote(queryString))),
-  None,
-  {'Host'            : host,
-   'User-Agent'      : agent,
-   'Accept-Encoding' : 'gzip',
-   'Authorization'   : 'Bearer ' + token})
-
+try:
+  data = issueRequestAndDecodeResponse(
+    'GET',
+    (searchUrl + 'count=3&since_id=%s&q=%s' %
+     (lastId, urllib.quote(queryString))),
+    None,
+    {'Host'            : host,
+     'User-Agent'      : agent,
+     'Accept-Encoding' : 'gzip',
+     'Authorization'   : 'Bearer ' + token})
+except:
+  print(lastId)
+  exit(0)
 
 # Display results. ---------------------------------------------------------
 
