@@ -37,11 +37,12 @@ from Adafruit_Thermal import *
 
 # Twitter application credentials -- see notes above -- DO NOT SHARE.
 # These have been moved to the config file.
-config = ConfigParser.SafeConfigParser({'query-string': 'from:Adafruit'})
+config = ConfigParser.SafeConfigParser({'query-string': 'from:Adafruit', 'ignore-replies': 'false'})
 config.read('options.cfg')
 consumer_key = config.get('twitter', 'consumer-key')
 consumer_secret = config.get('twitter', 'consumer-secret')
 queryString = config.get('twitter', 'query-string')
+ignore_replies = config.getboolean('twitter', 'ignore-replies')
 
 # queryString can be any valid Twitter API search string, including
 # boolean operators.  See http://dev.twitter.com/docs/using-search
@@ -115,6 +116,10 @@ except:
 maxId = data['search_metadata']['max_id_str']
 
 for tweet in data['statuses']:
+  decoded_text = unidecode(HTMLParser.HTMLParser().unescape(tweet['text']))
+
+  if (ignore_replies and decoded_text[0] == '@'):
+      continue
 
   printer.inverseOn()
   printer.print(' ' + '{:<31}'.format(tweet['user']['screen_name']))
@@ -130,8 +135,7 @@ for tweet in data['statuses']:
 
   # Remove HTML escape sequences
   # and remap Unicode values to nearest ASCII equivalents
-  printer.print(unidecode(
-    HTMLParser.HTMLParser().unescape(tweet['text'])))
+  printer.print(decoded_text)
 
   printer.feed(3)
 
