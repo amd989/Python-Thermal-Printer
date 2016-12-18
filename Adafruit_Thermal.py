@@ -50,13 +50,13 @@ class Adafruit_Thermal(Serial):
 	lineSpacing     =  8
 	barcodeHeight   = 50
 	printMode       =  0
-	defaultHeatTime = 60
+	defaultHeatTime = 20
 
 	def __init__(self, *args, **kwargs):
 		# If no parameters given, use default port & baud rate.
 		# If only port is passed, use default baud rate.
 		# If both passed, use those values.
-		baudrate = 19200
+		baudrate = 9600
 		if len(args) == 0:
 			args = [ "/dev/ttyAMA0", baudrate ]
 		elif len(args) == 1:
@@ -232,6 +232,8 @@ class Adafruit_Thermal(Serial):
 		self.online()
 		self.justify('L')
 		self.inverseOff()
+		self.upsideDownOff()
+		self.sidewaysOff()
 		self.doubleHeightOff()
 		self.setLineHeight(32)
 		self.boldOff()
@@ -319,16 +321,22 @@ class Adafruit_Thermal(Serial):
 		self.writePrintMode()
 
 	def inverseOn(self):
-		self.setPrintMode(self.INVERSE_MASK)
+	self.writeBytes(29, 66, 1)
 
 	def inverseOff(self):
-		self.unsetPrintMode(self.INVERSE_MASK)
+			self.writeBytes(29, 66, 0)
 
 	def upsideDownOn(self):
-		self.setPrintMode(self.UPDOWN_MASK)
+			self.writeBytes(27, 123, 1)
 
 	def upsideDownOff(self):
-		self.unsetPrintMode(self.UPDOWN_MASK)
+			self.writeBytes(27, 123, 0)
+
+	def sidewaysOn(self):     
+			self.writeBytes(27, 86, 1)
+
+	def sidewaysOff(self): 
+			self.writeBytes(27, 86, 0)   
 
 	def doubleHeightOn(self):
 		self.setPrintMode(self.DOUBLE_HEIGHT_MASK)
