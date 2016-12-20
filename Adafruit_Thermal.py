@@ -51,6 +51,7 @@ class Adafruit_Thermal(Serial):
 	barcodeHeight   = 50
 	printMode       =  0
 	defaultHeatTime = 20
+	defaultHeatDots = 32
 
 	def __init__(self, *args, **kwargs):
 		# If no parameters given, use default port & baud rate.
@@ -98,10 +99,11 @@ class Adafruit_Thermal(Serial):
 		# clear, but the slower printing speed.
 
 		heatTime = kwargs.get('heattime', self.defaultHeatTime)
+		heatDots = kwargs.get('heatdots', self.defaultHeatDots)
 		self.writeBytes(
 		  27,       # Esc
 		  55,       # 7 (print settings)
-		  20,       # Heat dots (20 = balance darkness w/no jams)
+		  heatDots, # Heat dots (32 = balance darkness w/no jams)
 		  heatTime, # Lib default = 45
 		  250)      # Heat interval (500 uS = slower but darker)
 
