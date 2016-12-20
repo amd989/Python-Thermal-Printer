@@ -24,7 +24,7 @@ skip_org_events = config.getboolean('github', 'skip-org-events')
 database_filename = config.get('database', 'filename')
 
 # Other globals
-printer = Adafruit_Thermal("/dev/ttyAMA0", 19200, timeout=5)
+printer = Adafruit_Thermal("/dev/ttyAMA0", 9600, timeout=5)
 
 
 def setup_database(conn):
