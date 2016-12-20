@@ -1,0 +1,14 @@
+cffi==1.0.2
+cryptography==0.9
+enum34==1.0.4
+github3.py==1.0.0a1
+idna==2.0
+ipaddress==1.0.7
+ndg-httpsclient==0.4.0
+pyOpenSSL==0.15.1
+pyasn1==0.1.7
+pycparser==2.13
+requests==2.7.0
+six==1.9.0
+uritemplate.py==0.3.0
+wsgiref==0.1.2

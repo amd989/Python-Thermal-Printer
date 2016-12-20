@@ -1,0 +1,13 @@
+# PyCharm
+.idea/
+*.iml
+
+# Config files not suitable for Github
+options.cfg
+
+# Object files
+*.pyc
+
+# SQLite databases
+*.db
+

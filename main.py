@@ -23,7 +23,8 @@ ledPin       = 18
 buttonPin    = 23
 holdTime     = 2     # Duration for button hold (shutdown)
 tapTime      = 0.01  # Debounce time for button taps
-nextInterval = 0.0   # Time of next recurring operation
+nextInterval = 0.0   # Time of next fast recurring operation
+nextSlowInterval = 0.0 # Time of next slow recurring operation
 dailyFlag    = False # Set after daily trigger occurs
 lastId       = '1'   # State information passed to/from interval script
 printer      = Adafruit_Thermal("/dev/ttyAMA0", 9600, timeout=5)
@@ -55,6 +56,12 @@ def interval():
   GPIO.output(ledPin, GPIO.LOW)
   return p.communicate()[0] # Script pipes back lastId, returned to main
 
+# Called at slow periodic intervals (15 minutes by default).
+# Invokes Github script.
+def slow_interval():
+  GPIO.output(ledPin, GPIO.HIGH)
+  subprocess.call(["python", "github.py"])
+  GPIO.output(ledPin, GPIO.LOW)
 
 # Called once per day (6:30am by default).
 # Invokes weather forecast and sudoku-gfx scripts.
@@ -164,3 +171,8 @@ while(True):
     if result is not None:
       lastId = result.rstrip('\r\n')
 
+  # Every 15 minutes, run Github script (and maybe other slow scripts
+  # in the future)..
+  if t > nextSlowInterval:
+    nextSlowInterval = t + (60.0 * 15.0)
+    slow_interval()

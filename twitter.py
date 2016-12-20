@@ -28,6 +28,7 @@
 
 from __future__ import print_function
 import base64, HTMLParser, httplib, json, sys, urllib, zlib
+import ConfigParser
 from unidecode import unidecode
 from Adafruit_Thermal import *
 
@@ -35,14 +36,19 @@ from Adafruit_Thermal import *
 # Configurable globals.  Edit to your needs. -------------------------------
 
 # Twitter application credentials -- see notes above -- DO NOT SHARE.
-consumer_key    = 'PUT_YOUR_CONSUMER_KEY_HERE'
-consumer_secret = 'PUT_YOUR_CONSUMER_SECRET_HERE'
+# These have been moved to the config file.
+config = ConfigParser.SafeConfigParser({'query-string': 'from:Adafruit', 'ignore-replies': 'false'})
+config.read('options.cfg')
+consumer_key = config.get('twitter', 'consumer-key')
+consumer_secret = config.get('twitter', 'consumer-secret')
+queryString = config.get('twitter', 'query-string')
+ignore_replies = config.getboolean('twitter', 'ignore-replies')
 
 # queryString can be any valid Twitter API search string, including
 # boolean operators.  See http://dev.twitter.com/docs/using-search
 # for options and syntax.  Funny characters do NOT need to be URL
 # encoded here -- urllib takes care of that.
-queryString = 'from:Adafruit'
+# This has been moved to the config file.
 
 
 # Other globals.  You probably won't need to change these. -----------------
@@ -75,35 +81,45 @@ def issueRequestAndDecodeResponse(method, url, body, headers):
 
 # Get access token. --------------------------------------------------------
 
-token = issueRequestAndDecodeResponse(
-  'POST', authUrl, 'grant_type=client_credentials',
-   {'Host'            : host,
-    'User-Agent'      : agent,
-    'Accept-Encoding' : 'gzip',
-    'Content-Type'    : 'application/x-www-form-urlencoded;charset=UTF-8',
-    'Authorization'   : 'Basic ' + base64.b64encode(
-     urllib.quote(consumer_key) + ':' + urllib.quote(consumer_secret))}
-  )['access_token']
-
+try:
+  token = issueRequestAndDecodeResponse(
+    'POST', authUrl, 'grant_type=client_credentials',
+     {'Host'            : host,
+      'User-Agent'      : agent,
+      'Accept-Encoding' : 'gzip',
+      'Content-Type'    : 'application/x-www-form-urlencoded;charset=UTF-8',
+      'Authorization'   : 'Basic ' + base64.b64encode(
+       urllib.quote(consumer_key) + ':' + urllib.quote(consumer_secret))}
+    )['access_token']
+except:
+  print(lastId)
+  exit(0)
 
 # Perform search. ----------------------------------------------------------
 
-data = issueRequestAndDecodeResponse(
-  'GET',
-  (searchUrl + 'count=3&since_id=%s&q=%s' %
-   (lastId, urllib.quote(queryString))),
-  None,
-  {'Host'            : host,
-   'User-Agent'      : agent,
-   'Accept-Encoding' : 'gzip',
-   'Authorization'   : 'Bearer ' + token})
-
+try:
+  data = issueRequestAndDecodeResponse(
+    'GET',
+    (searchUrl + 'count=3&since_id=%s&q=%s' %
+     (lastId, urllib.quote(queryString))),
+    None,
+    {'Host'            : host,
+     'User-Agent'      : agent,
+     'Accept-Encoding' : 'gzip',
+     'Authorization'   : 'Bearer ' + token})
+except:
+  print(lastId)
+  exit(0)
 
 # Display results. ---------------------------------------------------------
 
 maxId = data['search_metadata']['max_id_str']
 
 for tweet in data['statuses']:
+  decoded_text = unidecode(HTMLParser.HTMLParser().unescape(tweet['text']))
+
+  if (ignore_replies and decoded_text[0] == '@'):
+      continue
 
   printer.inverseOn()
   printer.print(' ' + '{:<31}'.format(tweet['user']['screen_name']))
@@ -119,8 +135,7 @@ for tweet in data['statuses']:
 
   # Remove HTML escape sequences
   # and remap Unicode values to nearest ASCII equivalents
-  printer.print(unidecode(
-    HTMLParser.HTMLParser().unescape(tweet['text'])))
+  printer.print(decoded_text)
 
   printer.feed(3)
 
