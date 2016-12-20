@@ -23,11 +23,21 @@ import Image, ImageDraw, time, urllib
 # by 'manually' visiting http://weather.yahoo.com, entering a location
 # and requesting a forecast, then copy the number from the end of the
 # current URL string and paste it here.
-WOEID = '2459115'
+WOEID = '59426'
 
+# grw - Apr 19, 2016
+# Updated Yahoo API query to new YQL format
+query_url = 'http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+weather.forecast+where+woeid%3D' + WOEID + '&format=xml'
+#  print(query_url)
+
+response = urllib.urlopen(query_url).read()
+#  print(response)
+
+dom = parseString(response)
 # Fetch weather data from Yahoo!, parse resulting XML
-dom = parseString(urllib.urlopen(
-        'http://weather.yahooapis.com/forecastrss?w=' + WOEID).read())
+# dom = parseString(urllib.urlopen(
+#        'http://weather.yahooapis.com/forecastrss?w=' + WOEID).read())
+#        'http://xml.weather.yahoo.com/forecastrss?w=' + WOEID).read())        
 
 # Extract values relating to current temperature, humidity, wind
 temperature = int(dom.getElementsByTagName(
