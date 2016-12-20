@@ -42,7 +42,7 @@ printer = Adafruit_Thermal("/dev/ttyAMA0", 9600, timeout=5)
 deg     = chr(0xf8) # Degree symbol on thermal printer
 # grw - Apr 19, 2016
 # Updated Yahoo API query to new YQL format
-query_url = 'http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+weather.forecast+where+woeid%3D' + WOEID + '&format=xml'
+query_url = 'http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+weather.forecast+where+woeid%3D' + WOEID + '%20and%20u%3D\'c\'&format=xml'
 
 # print(query_url)
 
@@ -58,16 +58,14 @@ dom = parseString(response)
 
 # Print heading
 printer.inverseOn()
-printer.print('{:^32}'.format(
-  dom.getElementsByTagName('description')[0].firstChild.data))
+printer.print('{:^32}'.format(dom.getElementsByTagName('description')[0].firstChild.data))
 printer.inverseOff()
 
 # Print current conditions
 printer.boldOn()
 printer.print('{:^32}'.format('Current conditions:'))
 printer.boldOff()
-printer.print('{:^32}'.format(
-  dom.getElementsByTagName('pubDate')[0].firstChild.data))
+printer.print('{:^32}'.format(dom.getElementsByTagName('pubDate')[0].firstChild.data))
 temp = dom.getElementsByTagName('yweather:condition')[0].getAttribute('temp')
 cond = dom.getElementsByTagName('yweather:condition')[0].getAttribute('text')
 printer.print(temp)

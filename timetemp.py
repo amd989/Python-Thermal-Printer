@@ -27,7 +27,7 @@ WOEID = '59426'
 
 # grw - Apr 19, 2016
 # Updated Yahoo API query to new YQL format
-query_url = 'http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+weather.forecast+where+woeid%3D' + WOEID + '&format=xml'
+query_url = 'http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+weather.forecast+where+woeid%3D' + WOEID + '%20and%20u%3D\'c\'&format=xml'
 #  print(query_url)
 
 response = urllib.urlopen(query_url).read()
@@ -40,16 +40,11 @@ dom = parseString(response)
 #        'http://xml.weather.yahoo.com/forecastrss?w=' + WOEID).read())        
 
 # Extract values relating to current temperature, humidity, wind
-temperature = int(dom.getElementsByTagName(
-                'yweather:condition')[0].getAttribute('temp'))
-humidity    = int(dom.getElementsByTagName(
-                'yweather:atmosphere')[0].getAttribute('humidity'))
-windSpeed   = int(dom.getElementsByTagName(
-                'yweather:wind')[0].getAttribute('speed'))
-windDir     = int(dom.getElementsByTagName(
-                'yweather:wind')[0].getAttribute('direction'))
-windUnits   = dom.getElementsByTagName(
-                'yweather:units')[0].getAttribute('speed')
+temperature = int(float(dom.getElementsByTagName('yweather:condition')[0].getAttribute('temp')))
+humidity    = int(float(dom.getElementsByTagName('yweather:atmosphere')[0].getAttribute('humidity')))
+windSpeed   = int(float(dom.getElementsByTagName('yweather:wind')[0].getAttribute('speed')))
+windDir     = int(float(dom.getElementsByTagName('yweather:wind')[0].getAttribute('direction')))
+windUnits   = dom.getElementsByTagName('yweather:units')[0].getAttribute('speed')
 
 # Although the Python Imaging Library does have nice font support,
 # I opted here to use a raster bitmap for all of the glyphs instead.
@@ -150,7 +145,7 @@ w  = Humidity.size[0] + 5 + numWidth(s, HumiDigit)
 w2 = Wind.size[0] + 5 + numWidth(s2, HumiDigit)
 if windSpeed > 0:
 	w2 += 3 + Dir[winDirNum].size[0]
-if windUnits == 'kph': w2 += 3 + Kph.size[0]
+if windUnits == 'km/h': w2 += 3 + Kph.size[0]
 else:                  w2 += 3 + Mph.size[0]
 if w2 > w: w = w2
 
@@ -168,7 +163,7 @@ if windSpeed > 0:
 	img.paste(Dir[winDirNum], (x, y))
 	x += Dir[winDirNum].size[0] + 3
 x = drawNums(s2, x, y, HumiDigit) + 3
-if windUnits == 'kph': img.paste(Kph, (x, y))
+if windUnits == 'km/h': img.paste(Kph, (x, y))
 else:                  img.paste(Mph, (x, y))
 
 # Open connection to printer and print image
