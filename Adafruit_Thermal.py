@@ -321,16 +321,16 @@ class Adafruit_Thermal(Serial):
 		self.writePrintMode()
 
 	def inverseOn(self):
-		self.writeBytes(29, 66, 1)
+		self.setPrintMode(self.INVERSE_MASK)
 
 	def inverseOff(self):
-		self.writeBytes(29, 66, 0)
+		self.unsetPrintMode(self.INVERSE_MASK)
 
 	def upsideDownOn(self):
-		self.writeBytes(27, 123, 1)
+		self.writeBytes(27, 123, 1, 0)
 
 	def upsideDownOff(self):
-		self.writeBytes(27, 123, 0)
+		self.writeBytes(27, 123, 0, 0)
 
 	def sidewaysOn(self):     
 		self.writeBytes(27, 86, 1)
