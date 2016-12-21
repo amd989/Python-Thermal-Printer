@@ -32,7 +32,7 @@ printer      = Adafruit_Thermal("/dev/ttyAMA0", 9600, timeout=5)
 # Called after every action.
 def face():
   printer.printImage(Image.open('gfx/face01.png'), True)
-  printer.feed(3)
+  printer.feed(7)
 
 # Called when button is briefly tapped.  Invokes time/temperature script.
 def tap():
@@ -135,6 +135,7 @@ while(True):
       if buttonState == True:       # Button released?
         if tapEnable == True:       # Ignore if prior hold()
           tap()                     # Tap triggered (button released)
+          face()                    # Print face after tap
           tapEnable  = False        # Disable tap and hold
           holdEnable = False
       else:                         # Button pressed
@@ -168,4 +169,5 @@ while(True):
     result = interval()
     if result is not None:
       lastId = result.rstrip('\r\n')
+	  face()
 

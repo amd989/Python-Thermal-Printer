@@ -210,11 +210,11 @@ class Adafruit_Thermal(Serial):
 	# The bulk of this method was moved into __init__,
 	# but this is left here for compatibility with older
 	# code that might get ported directly from Arduino.
-	def begin(self, heatTime=defaultHeatTime):
+	def begin(self, heatTime=defaultHeatTime, heatDots=defaultHeatDots):
 		self.writeBytes(
 		  27,       # Esc
 		  55,       # 7 (print settings)
-		  20,       # Heat dots (20 = balance darkness w/no jams)
+		  heatDots, # Heat dots (20 = balance darkness w/no jams)
 		  heatTime, # Lib default = 45
 		  250)      # Heat interval (500 uS = slower but darker)
 
