@@ -28,6 +28,7 @@ WOEID = '59426'
 # grw - Apr 19, 2016
 # Updated Yahoo API query to new YQL format
 query_url = 'http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+weather.forecast+where+woeid%3D' + WOEID + '%20and%20u%3D\'c\'&format=xml'
+
 #  print(query_url)
 
 response = urllib.urlopen(query_url).read()

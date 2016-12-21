@@ -29,6 +29,11 @@ lastId       = '1'   # State information passed to/from interval script
 printer      = Adafruit_Thermal("/dev/ttyAMA0", 9600, timeout=5)
 
 
+# Called after every action.
+def face():
+  printer.printImage(Image.open('gfx/face01.png'), True)
+  printer.feed(3)
+
 # Called when button is briefly tapped.  Invokes time/temperature script.
 def tap():
   GPIO.output(ledPin, GPIO.HIGH)  # LED on while working
