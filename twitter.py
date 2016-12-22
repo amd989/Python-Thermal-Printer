@@ -125,7 +125,7 @@ for tweet in statuses:
 
   printer.feed(3)
 
-if len(statuses) > 0
+if len(statuses) > 0:
   subprocess.call(["python", "face.py"])
   
 print(maxId) # Piped back to calling process
