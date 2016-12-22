@@ -168,5 +168,5 @@ while(True):
     nextInterval = t + 30.0
     result = interval()
     if result is not None:
-	  face()
+      face()
       lastId = result.rstrip('\r\n')
