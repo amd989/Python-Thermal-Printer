@@ -102,8 +102,9 @@ data = issueRequestAndDecodeResponse(
 # Display results. ---------------------------------------------------------
 
 maxId = data['search_metadata']['max_id_str']
+statuses = data['statuses']
 
-for tweet in data['statuses']:
+for tweet in statuses:
 
   printer.inverseOn()
   printer.print(' ' + '{:<31}'.format(tweet['user']['screen_name']))
@@ -124,4 +125,7 @@ for tweet in data['statuses']:
 
   printer.feed(3)
 
+if len(statuses) > 0
+  subprocess.call(["python", "face.py"])
+  
 print(maxId) # Piped back to calling process

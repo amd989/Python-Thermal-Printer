@@ -27,12 +27,12 @@ nextInterval = 0.0   # Time of next recurring operation
 dailyFlag    = False # Set after daily trigger occurs
 lastId       = '1'   # State information passed to/from interval script
 printer      = Adafruit_Thermal("/dev/ttyAMA0", 9600, timeout=5)
+started      = False # Flag signaling the server has started
 
 
 # Called after every action.
 def face():
-  printer.printImage(Image.open('gfx/face01.png'), True)
-  printer.feed(7)
+  subprocess.call(["python", "face.py"])  
 
 # Called when button is briefly tapped.  Invokes time/temperature script.
 def tap():
