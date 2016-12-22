@@ -38,6 +38,7 @@ def face():
 def tap():
   GPIO.output(ledPin, GPIO.HIGH)  # LED on while working
   subprocess.call(["python", "timetemp.py"])
+  printer.feed(3)
   GPIO.output(ledPin, GPIO.LOW)
 
 
