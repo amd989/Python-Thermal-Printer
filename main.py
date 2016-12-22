@@ -38,7 +38,6 @@ def face():
 def tap():
   GPIO.output(ledPin, GPIO.HIGH)  # LED on while working
   subprocess.call(["python", "timetemp.py"])
-  printer.feed(3)
   GPIO.output(ledPin, GPIO.LOW)
 
 
@@ -46,7 +45,7 @@ def tap():
 def hold():
   GPIO.output(ledPin, GPIO.HIGH)
   printer.printImage(Image.open('gfx/goodbye.png'), True)
-  printer.feed(3)
+  printer.feed(7)
   subprocess.call("sync")
   subprocess.call(["shutdown", "-h", "now"])
   GPIO.output(ledPin, GPIO.LOW)
@@ -68,6 +67,7 @@ def daily():
   GPIO.output(ledPin, GPIO.HIGH)
   subprocess.call(["python", "forecast.py"])
   subprocess.call(["python", "sudoku-gfx.py"])
+  printer.feed(7)
   GPIO.output(ledPin, GPIO.LOW)
 
 
@@ -85,7 +85,7 @@ GPIO.output(ledPin, GPIO.HIGH)
 
 # Processor load is heavy at startup; wait a moment to avoid
 # stalling during greeting.
-time.sleep(30)
+time.sleep(15)
 
 # Show IP address (if network is available)
 try:
@@ -104,7 +104,7 @@ except:
 
 # Print greeting image
 printer.printImage(Image.open('gfx/hello.png'), True)
-printer.feed(3)
+printer.feed(5)
 GPIO.output(ledPin, GPIO.LOW)
 
 # Poll initial button state and time
