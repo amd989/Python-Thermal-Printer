@@ -46,6 +46,7 @@ def hold():
   GPIO.output(ledPin, GPIO.HIGH)
   printer.printImage(Image.open('gfx/goodbye.png'), True)
   printer.feed(7)
+  time.sleep(5)
   subprocess.call("sync")
   subprocess.call(["shutdown", "-h", "now"])
   GPIO.output(ledPin, GPIO.LOW)
@@ -90,7 +91,9 @@ time.sleep(15)
 try:
 	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	s.connect(('8.8.8.8', 0))
+	printer.boldOn()
 	printer.print('My IP address is ' + s.getsockname()[0])
+	printer.boldOff()
 	printer.feed(3)
 except:
 	printer.boldOn()
