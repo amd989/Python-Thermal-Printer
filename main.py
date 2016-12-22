@@ -67,7 +67,6 @@ def daily():
   GPIO.output(ledPin, GPIO.HIGH)
   subprocess.call(["python", "forecast.py"])
   subprocess.call(["python", "sudoku-gfx.py"])
-  printer.feed(7)
   GPIO.output(ledPin, GPIO.LOW)
 
 
@@ -104,7 +103,7 @@ except:
 
 # Print greeting image
 printer.printImage(Image.open('gfx/hello.png'), True)
-printer.feed(5)
+printer.feed(7)
 GPIO.output(ledPin, GPIO.LOW)
 
 # Poll initial button state and time

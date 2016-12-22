@@ -122,6 +122,6 @@ for tweet in data['statuses']:
   printer.print(unidecode(
     HTMLParser.HTMLParser().unescape(tweet['text'])))
 
-  printer.feed(7)
+  printer.feed(3)
 
 print(maxId) # Piped back to calling process

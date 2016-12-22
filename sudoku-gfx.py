@@ -51,7 +51,7 @@ def main():
       answer = solution(puzzle)
       if answer is None: printer.println("NO SOLUTION")
       else: printer.print(printboard(answer))
-  printer.feed(3)
+  printer.feed(6)
 
 def makepuzzle(board):
   puzzle = []; deduced = [None] * 81
