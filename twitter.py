@@ -27,7 +27,7 @@
 # with dummy strings.
 
 from __future__ import print_function
-import base64, HTMLParser, httplib, json, sys, urllib, zlib, subprocess
+import base64, HTMLParser, httplib, json, sys, urllib, zlib, subprocess, time
 from unidecode import unidecode
 from Adafruit_Thermal import *
 
@@ -126,6 +126,8 @@ for tweet in statuses:
   printer.feed(3)
 
 if len(statuses) > 0:
+  time.sleep(3)
+  printer.feed(5)
   subprocess.call(["python", "face.py"])
   
 print(maxId) # Piped back to calling process
