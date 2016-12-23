@@ -124,6 +124,7 @@ for tweet in statuses:
   printer.feed(3)
 
 if len(statuses) > 0:
+  time.sleep(3)
   printer.feed(5)
   printer.printImage(Image.open('gfx/face01.png'), True)
   printer.feed(7)
