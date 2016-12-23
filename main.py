@@ -37,8 +37,9 @@ def face():
 # Called when button is briefly tapped.  Invokes time/temperature script.
 def tap():
   GPIO.output(ledPin, GPIO.HIGH)  # LED on while working
-  subprocess.call(["python", "timetemp.py"])
+  subprocess.call(["python", "timetemp.py"])  
   GPIO.output(ledPin, GPIO.LOW)
+  time.sleep(3)
 
 
 # Called when button is held down.  Prints image, invokes shutdown process.
