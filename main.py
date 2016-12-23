@@ -32,8 +32,9 @@ started      = False # Flag signaling the server has started
 
 # Called after every action.
 def face():
-  subprocess.call(["python", "face.py"])  
-
+  printer.printImage(Image.open('gfx/face01.png'), True)
+  printer.feed(7)
+  
 # Called when button is briefly tapped.  Invokes time/temperature script.
 def tap():
   GPIO.output(ledPin, GPIO.HIGH)  # LED on while working
@@ -107,7 +108,7 @@ except:
 
 # Print greeting image
 printer.printImage(Image.open('gfx/hello.png'), True)
-printer.feed(7)
+printer.feed(3)
 GPIO.output(ledPin, GPIO.LOW)
 
 # Poll initial button state and time
