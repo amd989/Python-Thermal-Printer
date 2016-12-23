@@ -27,7 +27,7 @@
 # with dummy strings.
 
 from __future__ import print_function
-import base64, HTMLParser, httplib, json, sys, urllib, zlib, subprocess, time
+import base64, HTMLParser, httplib, json, sys, urllib, zlib, subprocess, time, Image
 from unidecode import unidecode
 from Adafruit_Thermal import *
 
