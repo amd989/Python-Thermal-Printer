@@ -121,8 +121,9 @@ for tweet in statuses:
   # Remove HTML escape sequences
   # and remap Unicode values to nearest ASCII equivalents
   printer.print(unidecode(HTMLParser.HTMLParser().unescape(tweet['text'])))
+  time.sleep(3)
   printer.feed(3)
-
+  
 if len(statuses) > 0:
   time.sleep(3)
   printer.feed(5)
