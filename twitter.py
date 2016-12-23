@@ -120,12 +120,10 @@ for tweet in statuses:
 
   # Remove HTML escape sequences
   # and remap Unicode values to nearest ASCII equivalents
-  printer.print(unidecode(
-    HTMLParser.HTMLParser().unescape(tweet['text'])))
+  printer.print(unidecode(HTMLParser.HTMLParser().unescape(tweet['text'])))
   printer.feed(3)
 
 if len(statuses) > 0:
-  time.sleep(3)
   printer.feed(5)
   printer.printImage(Image.open('gfx/face01.png'), True)
   printer.feed(7)

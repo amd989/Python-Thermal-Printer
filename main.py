@@ -47,7 +47,7 @@ def tap():
 def hold():
   GPIO.output(ledPin, GPIO.HIGH)
   printer.printImage(Image.open('gfx/goodbye.png'), True)
-  printer.feed(10)
+  printer.feed(9)
   time.sleep(5)
   subprocess.call("sync")
   subprocess.call(["shutdown", "-h", "now"])
