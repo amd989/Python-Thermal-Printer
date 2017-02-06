@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# Main script for Adafruit Internet of Things Printer 2.  Monitors button
+# Main script for Adafruit Internet of Things device 2.  Monitors button
 # for taps and holds, performs periodic actions (Twitter polling by default)
 # and daily actions (Sudoku and weather by default).
 # Written by Adafruit Industries.  MIT license.
@@ -11,13 +11,16 @@
 # libraries. Other libraries used are part of stock Python install.
 #
 # Resources:
-# http://www.adafruit.com/products/597 Mini Thermal Receipt Printer
-# http://www.adafruit.com/products/600 Printer starter pack
+# http://www.adafruit.com/products/597 Mini Thermal Receipt device
+# http://www.adafruit.com/products/600 device starter pack
 
 from __future__ import print_function
 import RPi.GPIO as GPIO
 import subprocess, time, Image, socket
 from Adafruit_Thermal import *
+import threading
+import server
+import printer
 
 ledPin       = 18
 buttonPin    = 23
@@ -26,14 +29,14 @@ tapTime      = 0.01  # Debounce time for button taps
 nextInterval = 0.0   # Time of next recurring operation
 dailyFlag    = False # Set after daily trigger occurs
 lastId       = '1'   # State information passed to/from interval script
-printer      = Adafruit_Thermal("/dev/ttyAMA0", 9600, timeout=5)
+device      = Adafruit_Thermal("/dev/ttyAMA0", 9600, timeout=5)
 started      = False # Flag signaling the server has started
 
 
 # Called after every action.
 def face():
-  printer.printImage(Image.open('gfx/face01.png'), True)
-  printer.feed(7)
+  device.printImage(Image.open('gfx/face01.png'), True)
+  device.feed(7)
   
 # Called when button is briefly tapped.  Invokes time/temperature script.
 def tap():
@@ -46,8 +49,8 @@ def tap():
 # Called when button is held down.  Prints image, invokes shutdown process.
 def hold():
   GPIO.output(ledPin, GPIO.HIGH)
-  printer.printImage(Image.open('gfx/goodbye.png'), True)
-  printer.feed(9)
+  device.printImage(Image.open('gfx/goodbye.png'), True)
+  device.feed(9)
   time.sleep(5)
   subprocess.call("sync")
   subprocess.call(["shutdown", "-h", "now"])
@@ -89,26 +92,26 @@ GPIO.output(ledPin, GPIO.HIGH)
 # stalling during greeting.
 time.sleep(15)
 
-# Show IP address (if network is available)
+Show IP address (if network is available)
 try:
-	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-	s.connect(('8.8.8.8', 0))
-	printer.boldOn()
-	printer.print('My IP address is ' + s.getsockname()[0])
-	printer.boldOff()
-	printer.feed(3)
+  s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+  s.connect(('8.8.8.8', 0))
+  device.boldOn()
+  device.print('My IP address is ' + s.getsockname()[0])
+  device.boldOff()
+  device.feed(3)
 except:
-	printer.boldOn()
-	printer.println('Network is unreachable.')
-	printer.boldOff()
-	printer.print('Connect display and keyboard\n'
-	  'for network troubleshooting.')
-	printer.feed(3)
-	exit(0)
+  device.boldOn()
+  device.println('Network is unreachable.')
+  device.boldOff()
+  device.print('Connect display and keyboard\n'
+    'for network troubleshooting.')
+  device.feed(3)
+  exit(0)
 
-# Print greeting image
-printer.printImage(Image.open('gfx/hello.png'), True)
-printer.feed(3)
+Print greeting image
+device.printImage(Image.open('gfx/hello.png'), True)
+device.feed(3)
 GPIO.output(ledPin, GPIO.LOW)
 
 # Poll initial button state and time
@@ -116,6 +119,10 @@ prevButtonState = GPIO.input(buttonPin)
 prevTime        = time.time()
 tapEnable       = False
 holdEnable      = False
+
+# Starts the webservice
+webservice_thread = threading.Thread(target=server.run_webservice)
+webservice_thread.start()
 
 # Main loop
 while(True):
@@ -155,6 +162,12 @@ while(True):
     GPIO.output(ledPin, GPIO.HIGH)
   else:
     GPIO.output(ledPin, GPIO.LOW)
+
+  # Prints the printer queue
+  while not printer.queue.empty():
+
+    print_order = printer.queue.get()
+    print_order.execute()
 
   # Once per day (currently set for 6:30am local time, or when script
   # is first run, if after 6:30am), run forecast and sudoku scripts.

@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+<title>Test</title>
+<script src="http://code.jquery.com/jquery-2.0.0.js"></script>
+<script>
+
+  function encodeImageFileAsURL(cb) {
+    return function(){
+        var file = this.files[0];
+        var reader  = new FileReader();
+        reader.onloadend = function () {
+            cb(btoa(reader.result));
+        }
+        reader.readAsBinaryString(file);
+    }
+  }
+
+  $(document).ready(function () {
+
+  var ws = new WebSocket("ws://localhost:8888/ws"); 
+
+  ws.onopen = function(evt) {
+  var conn_status = document.getElementById('conn_text');
+  conn_status.innerHTML = "Connection status: Connected!"
+};
+
+ws.onmessage = function(evt) {
+  var newMessage = document.createElement('p');
+  newMessage.textContent = "Server: " + evt.data;
+  document.getElementById('messages_txt').appendChild(newMessage);
+};
+
+ws.onclose = function(evt) {
+  alert ("Connection closed");
+  var conn_status = document.getElementById('conn_text');
+  conn_status.innerHTML = "Connection status: Not Connected"
+};
+
+$('#inputFileToLoad').change(encodeImageFileAsURL(function(base64Img){
+    ws.send(base64Img);
+    var newMessage = document.createElement('p');
+    newMessage.textContent = "Client: Image send!";
+    document.getElementById('messages_txt').appendChild(newMessage);
+}));
+
+});
+</script>
+</body>
+</html>
+</head>
+<body>
+<h1>Test</h1>
+<label id="conn_text"></label><br />
+<input id="inputFileToLoad" type="file" onchange="encodeImageFileAsURL();" />
+<div id="messages_txt" />
