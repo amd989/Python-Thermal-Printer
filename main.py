@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# Main script for Adafruit Internet of Things device 2.  Monitors button
+# Main script for Adafruit Internet of Things Printer 2.  Monitors button
 # for taps and holds, performs periodic actions (Twitter polling by default)
 # and daily actions (Sudoku and weather by default).
 # Written by Adafruit Industries.  MIT license.
@@ -11,8 +11,8 @@
 # libraries. Other libraries used are part of stock Python install.
 #
 # Resources:
-# http://www.adafruit.com/products/597 Mini Thermal Receipt device
-# http://www.adafruit.com/products/600 device starter pack
+# http://www.adafruit.com/products/597 Mini Thermal Receipt Printer
+# http://www.adafruit.com/products/600 printer starter pack
 
 from __future__ import print_function
 import RPi.GPIO as GPIO
@@ -92,7 +92,7 @@ GPIO.output(ledPin, GPIO.HIGH)
 # stalling during greeting.
 time.sleep(15)
 
-Show IP address (if network is available)
+# Show IP address (if network is available)
 try:
   s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
   s.connect(('8.8.8.8', 0))
@@ -109,7 +109,7 @@ except:
   device.feed(3)
   exit(0)
 
-Print greeting image
+# Print greeting image
 device.printImage(Image.open('gfx/hello.png'), True)
 device.feed(3)
 GPIO.output(ledPin, GPIO.LOW)
